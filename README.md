@@ -25,3 +25,23 @@ process_count = ... # an interger to control the number of processes
 mptrolley.solve_problem_with_multiprocessing(question_function, common, question_count, process_count)
 ```
 the question list will be devided into `process_count` lists according to `question_index % process_count`. for some question `qx` and some process `px`, `px` will be used to solve `qx` if and only if `qx.question_index % process_count == px.process_index`.
+
+## install
+1. go [https://github.com/GGN-2015/mptrolley/releases](https://github.com/GGN-2015/mptrolley/releases) and download a .whl file.
+2. use pip install `mptrolley-<version>-py3-none-any.whl` to install the package into your local environment.
+
+## usage
+```python3
+import mptrolley
+
+# define your own question function, it **MUST** have two parameters
+#   question_index will be given a continuous integer index.
+#   and common_context is the common information you may need during every question's solving procedure.
+#   (there are many cases where we just don't need it.)
+def question_function(question_index, common_context) -> None:
+  ...
+
+common        = ... # common information
+process_count = ... # an interger to control the number of processes
+mptrolley.solve_problem_with_multiprocessing(question_function, common, question_count, process_count)
+```
