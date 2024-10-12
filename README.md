@@ -26,9 +26,15 @@ mptrolley.solve_problem_with_multiprocessing(question_function, common, question
 ```
 the question list will be devided into `process_count` lists according to `question_index % process_count`. for some question `qx` and some process `px`, `px` will be used to solve `qx` if and only if `qx.question_index % process_count == px.process_index`.
 
-## install
+## install from github release
 1. go [https://github.com/GGN-2015/mptrolley/releases](https://github.com/GGN-2015/mptrolley/releases) and download a .whl file.
 2. use pip install `mptrolley-<version>-py3-none-any.whl` to install the package into your local environment.
+
+## install from pypi
+
+```bash
+pip install mptrolley
+```
 
 ## usage
 ```python3

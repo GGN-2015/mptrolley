@@ -8,7 +8,7 @@ description = "a simple python module to solve problem in a multiprocessing way.
 authors = [
     { name = "GGN_2015", email = "premierbob@qq.com" }
 ]
-version = "0.0.1"
+version = "0.0.2"
 dependencies = []
 readme = "README.md"
 license = { file = "LICENSE" }
