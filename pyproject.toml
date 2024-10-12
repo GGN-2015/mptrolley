@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mptrolley"
+description = "a simple python module to solve problem in a multiprocessing way."
+authors = [
+    { name = "GGN_2015", email = "premierbob@qq.com" }
+]
+version = "0.0.1"
+dependencies = []
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.11"
+
+[tool.setuptools]
+include-package-data = true
