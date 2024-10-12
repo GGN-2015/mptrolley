@@ -67,7 +67,7 @@ def solve_problem_with_multiprocessing(question_function, common_context: dict, 
 
 
 # the following code are a sample usage of mptrolley
-def run_sample_probelm(question_cnt, process_cnt):
+def run_sample_problem(question_cnt, process_cnt):
     import os
     import hashlib
     dirnow    = os.path.dirname(os.path.abspath(__file__))
@@ -88,4 +88,4 @@ def run_sample_probelm(question_cnt, process_cnt):
     solve_problem_with_multiprocessing(sample_question_function, {}, question_cnt, process_cnt)
 
 if __name__ == "__main__": # this is just a testcase
-    run_sample_probelm(100, 32)
+    run_sample_problem(100, 32)
