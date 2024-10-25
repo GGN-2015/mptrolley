@@ -1,6 +1,7 @@
 import process_wrap_queue
 from rich.progress import Progress, TextColumn, BarColumn, TimeElapsedColumn, TimeRemainingColumn
 import time
+import json
 
 """
 question_function(question_id: int, common_context: dict):
@@ -24,7 +25,7 @@ problem:
 attention:
     the user needs to ensure that the function question_function can be called in parallel.
 """
-def solve_problem_with_multiprocessing(question_function, common_context: dict, question_count: int, process_count: int):
+def solve_problem_with_multiprocessing(question_function, common_context: dict, question_count: int, process_count: int, timeout=None, dumpfile=None):
     assert question_count >= 1
     assert process_count > 0
 
@@ -36,7 +37,7 @@ def solve_problem_with_multiprocessing(question_function, common_context: dict, 
 
     # create all inner_process_wrap in subprocess
     for i in range(question_count):
-        pw            = process_wrap_queue.InnerProcessWrap(question_function, args=(i, common_context))
+        pw            = process_wrap_queue.InnerProcessWrap(question_function, args=(i, common_context), timeout=timeout)
         process_index = i % process_count
         pw_queue_list[process_index].add_process_wrap(pw) # add inner process wrap
 
@@ -65,11 +66,21 @@ def solve_problem_with_multiprocessing(question_function, common_context: dict, 
         for pw_queue in pw_queue_list:
             pw_queue.set_queue_status("AUTO") # auto quit when finished
 
+        # save progress to file
+        def create_dump_file(dumpfile: str):
+            dict_value = {}
+            for idx, pw_queue in enumerate(pw_queue_list):
+                dict_value[idx] = pw_queue.get_queue_status()
+            fp = open(dumpfile, "w")
+            json.dump(dict_value, fp, indent=4)
+
         # wait
         while not progress.finished:
             time.sleep(0.2)
             for i in range(len(task_list)):
                 progress.update(task_list[i], completed=get_finished_job_count(pw_queue_list[i]))
+            if dumpfile is not None:
+                create_dump_file(dumpfile)
 
 
 
@@ -81,6 +92,7 @@ def run_sample_problem(question_cnt, process_cnt):
     test_case = os.path.join(dirnow, "test_case")
 
     def calculate_sha256(input_string: str) -> str:
+        time.sleep(2)
         sha256_hash = hashlib.sha256()
         sha256_hash.update(input_string.encode('utf-8'))
         return sha256_hash.hexdigest()
@@ -92,7 +104,10 @@ def run_sample_problem(question_cnt, process_cnt):
         for _ in range(1000000): # calculate sha256sum for many times (to waste time)
             raw_string = calculate_sha256(raw_string)
         open(data_file, "w").write(raw_string)
-    solve_problem_with_multiprocessing(sample_question_function, {}, question_cnt, process_cnt)
+
+    dirnow         = os.path.dirname(os.path.abspath(__file__))
+    test_dump_file = os.path.join(dirnow, "test_case", "log.json")
+    solve_problem_with_multiprocessing(sample_question_function, {}, question_cnt, process_cnt, timeout=1.5, dumpfile=test_dump_file)
 
 if __name__ == "__main__": # this is just a testcase
     run_sample_problem(100, 5)
